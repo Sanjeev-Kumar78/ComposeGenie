@@ -5,13 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",

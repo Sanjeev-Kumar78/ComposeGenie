@@ -1,5 +1,6 @@
 {
   "testEnvironment": "node",
+  "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
   "coverageDirectory": "coverage",
   "collectCoverageFrom": [
     "src/**/*.js",
@@ -10,5 +11,10 @@
     "**/__tests__/**/*.js",
     "**/?(*.)+(spec|test).js"
   ],
-  "verbose": true
+  "testPathIgnorePatterns": [
+    "/node_modules/",
+    "/coverage/"
+  ],
+  "verbose": true,
+  "coverageReporters": ["text", "lcov", "html"]
 }

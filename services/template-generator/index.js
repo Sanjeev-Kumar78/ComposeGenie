@@ -9,15 +9,19 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
-const compression = require('compression');
+const morgan = require('morgan');
 
-const config = require('./config/config');
 const routes = require('./src/routes');
-const { 
-  loggingMiddleware, 
-  errorMiddleware,
-  validationMiddleware,
-} = require('./src/middleware');
+const { errorHandler } = require('./src/middleware/errorHandler');
+
+// Simple configuration for MVP
+const config = {
+  port: process.env.PORT || 3000,
+  host: process.env.HOST || '0.0.0.0',
+  mongoUri: process.env.MONGODB_URI || 'mongodb://localhost:27017/template-generator-dev',
+  jwtSecret: process.env.JWT_SECRET || 'your-fallback-jwt-secret',
+  environment: process.env.NODE_ENV || 'development',
+};
 
 class Application {
   constructor() {
@@ -33,46 +37,30 @@ class Application {
    */
   setupMiddleware() {
     // Security middleware
-    this.app.use(helmet(config.security.helmet));
+    this.app.use(helmet());
     
     // CORS configuration
-    this.app.use(cors(config.server.cors));
-    
-    // Compression middleware
-    this.app.use(compression());
-    
-    // Trust proxy if behind reverse proxy
-    if (config.server.trustProxy) {
-      this.app.set('trust proxy', 1);
-    }
-    
-    // Body parsing middleware
-    this.app.use(express.json({ 
-      limit: '10mb',
-      type: ['application/json', 'text/plain'],
+    this.app.use(cors({
+      origin: config.environment === 'development' ? true : false,
+      credentials: true,
     }));
-    this.app.use(express.urlencoded({ 
-      extended: true, 
-      limit: '10mb',
-    }));
+    
 
-    // Request correlation ID
-    this.app.use(loggingMiddleware.correlationId);
     
     // HTTP request logging
-    this.app.use(loggingMiddleware.httpLogger);
+    this.app.use(morgan('combined'));
     
-    // Request context logging (detailed)
-    this.app.use(loggingMiddleware.requestLogger);
+    // Body parsing middleware
+    this.app.use(express.json({ limit: '10mb' }));
+    this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
     
-    // Input sanitization
-    this.app.use(validationMiddleware.sanitizeInput);
+
 
     // API info endpoint
     this.app.get('/', (req, res) => {
       res.json({
         service: 'Template Generator Service',
-        version: process.env.npm_package_version || '1.0.0',
+        version: '1.0.0',
         status: 'running',
         environment: config.environment,
         timestamp: new Date().toISOString(),
@@ -80,9 +68,7 @@ class Application {
           health: '/health',
           api: '/api',
           templates: '/api/templates',
-          docs: config.api.documentation.enabled ? config.api.documentation.path : null,
         },
-        documentation: 'https://github.com/Krishna-kg732/docker_compose_generator',
       });
     });
   }
@@ -95,18 +81,17 @@ class Application {
     this.app.use('/', routes);
     
     // Handle 404 errors
-    this.app.use(errorMiddleware.notFoundHandler);
+    this.app.use('*', (req, res) => {
+      res.status(404).json({ success: false, message: 'Route not found' });
+    });
   }
 
   /**
    * Setup error handling
    */
   setupErrorHandling() {
-    // Error logging middleware
-    this.app.use(loggingMiddleware.errorLogger);
-    
     // Global error handler
-    this.app.use(errorMiddleware.errorHandler);
+    this.app.use(errorHandler);
   }
 
   /**
@@ -114,34 +99,26 @@ class Application {
    */
   async connectDatabase() {
     try {
-      loggingMiddleware.logger.info('Connecting to MongoDB...', {
-        uri: config.database.mongodb.uri.replace(/\/\/.*@/, '//***:***@'), // Hide credentials
+      console.log('Connecting to MongoDB...');
+      
+      await mongoose.connect(config.mongoUri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
       });
 
-      await mongoose.connect(config.database.mongodb.uri, config.database.mongodb.options);
-
-      loggingMiddleware.logger.info('MongoDB connected successfully', {
-        readyState: mongoose.connection.readyState,
-        host: mongoose.connection.host,
-        port: mongoose.connection.port,
-        name: mongoose.connection.name,
-      });
+      console.log('MongoDB connected successfully');
 
       // Handle MongoDB connection events
       mongoose.connection.on('error', (error) => {
-        loggingMiddleware.logger.error('MongoDB connection error', { error: error.message });
+        console.error('MongoDB connection error:', error.message);
       });
 
       mongoose.connection.on('disconnected', () => {
-        loggingMiddleware.logger.warn('MongoDB disconnected');
-      });
-
-      mongoose.connection.on('reconnected', () => {
-        loggingMiddleware.logger.info('MongoDB reconnected');
+        console.warn('MongoDB disconnected');
       });
 
     } catch (error) {
-      loggingMiddleware.logger.error('MongoDB connection failed', { error: error.message });
+      console.error('MongoDB connection failed:', error.message);
       throw error;
     }
   }
@@ -155,42 +132,29 @@ class Application {
       await this.connectDatabase();
 
       // Start HTTP server
-      this.server = this.app.listen(config.server.port, config.server.host, () => {
-        loggingMiddleware.logger.info('Server started successfully', {
-          port: config.server.port,
-          host: config.server.host,
-          environment: config.environment,
-          pid: process.pid,
-          nodeVersion: process.version,
-        });
-
+      this.server = this.app.listen(config.port, config.host, () => {
         console.log(`
 🚀 Template Generator Service Started!
 
 Environment: ${config.environment}
-Port: ${config.server.port}
-Host: ${config.server.host}
+Port: ${config.port}
+Host: ${config.host}
 Process ID: ${process.pid}
 
-Health Check: http://${config.server.host}:${config.server.port}/health
-API Endpoints: http://${config.server.host}:${config.server.port}/api
-${config.api.documentation.enabled ? `Documentation: http://${config.server.host}:${config.server.port}${config.api.documentation.path}` : ''}
+Health Check: http://${config.host}:${config.port}/health
+API Endpoints: http://${config.host}:${config.port}/api
 
 Ready to generate Docker Compose templates! 🐳
         `);
       });
 
-      // Set server timeout
-      this.server.timeout = 30000; // 30 seconds
-
       // Handle server errors
       this.server.on('error', (error) => {
-        loggingMiddleware.logger.error('Server error', { error: error.message });
+        console.error('Server error:', error.message);
         throw error;
       });
 
     } catch (error) {
-      loggingMiddleware.logger.error('Failed to start server', { error: error.message });
       console.error('Failed to start server:', error.message);
       process.exit(1);
     }
@@ -200,17 +164,17 @@ Ready to generate Docker Compose templates! 🐳
    * Graceful shutdown
    */
   async stop() {
-    loggingMiddleware.logger.info('Shutting down server...');
+    console.log('Shutting down server...');
 
     return new Promise((resolve) => {
       // Close HTTP server
       if (this.server) {
         this.server.close(() => {
-          loggingMiddleware.logger.info('HTTP server closed');
+          console.log('HTTP server closed');
           
           // Close database connection
           mongoose.connection.close(() => {
-            loggingMiddleware.logger.info('MongoDB connection closed');
+            console.log('MongoDB connection closed');
             resolve();
           });
         });
@@ -240,20 +204,12 @@ process.on('SIGINT', async () => {
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
   console.error('Uncaught Exception:', error);
-  loggingMiddleware.logger.error('Uncaught Exception', { 
-    error: error.message, 
-    stack: error.stack 
-  });
   process.exit(1);
 });
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  loggingMiddleware.logger.error('Unhandled Promise Rejection', { 
-    reason: reason?.message || reason,
-    stack: reason?.stack,
-  });
   process.exit(1);
 });
 

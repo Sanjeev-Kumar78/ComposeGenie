@@ -1,5 +1,3 @@
-const { logger } = require('./logging');
-
 /**
  * Global error handler middleware
  */
@@ -57,14 +55,13 @@ const errorHandler = (error, req, res, next) => {
     details = error.message;
   }
 
-  // Log error (already handled in logging middleware, but for completeness)
+  // Log error for server errors
   if (statusCode >= 500) {
-    logger.error('Server error', {
+    console.error('Server error:', {
       error: error.message,
       stack: error.stack,
       url: req.url,
       method: req.method,
-      correlationId: req.correlationId,
     });
   }
 
@@ -73,7 +70,6 @@ const errorHandler = (error, req, res, next) => {
     success: false,
     message,
     ...(details && { details }),
-    ...(req.correlationId && { correlationId: req.correlationId }),
   };
 
   // Include stack trace in development

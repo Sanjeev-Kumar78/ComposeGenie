@@ -1,7 +1,6 @@
-// Export all middleware
+// Simplified middleware exports for MVP
 module.exports = {
-  authMiddleware: require('./auth'),
-  validationMiddleware: require('./validation'),
-  errorMiddleware: require('./errorHandler'),
-  loggingMiddleware: require('./logging'),
+  auth: require('./auth'),
+  validation: require('./validation'),
+  errorHandler: require('./errorHandler'),
 };

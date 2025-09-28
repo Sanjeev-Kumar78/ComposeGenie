@@ -13,7 +13,7 @@ services:
     {{#if environment}}
     environment:
       {{#each environment}}
-      {{key}}: {{value}}
+      - {{key}}={{value}}
       {{/each}}
     {{/if}}
     {{#if volumes}}

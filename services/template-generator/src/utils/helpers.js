@@ -2,8 +2,9 @@
  * Simple utility functions for MVP
  */
 
+const mongoose = require('mongoose');
+
 const isValidObjectId = (id) => {
-  const mongoose = require('mongoose');
   return mongoose.Types.ObjectId.isValid(id);
 };
 

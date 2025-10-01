@@ -6,7 +6,7 @@ A comprehensive web portal for generating production-ready docker-compose files 
 
 **Docker Compose Generator** is a complete solution for safely deploying containerized applications. It fetches services from Docker Hub, scans for vulnerabilities, detects configuration issues (port conflicts, missing environment variables), and suggests alternative image versions if severe security issues are found - all before you download your compose file.
 
-## ✨ Key Features
+## Key Features
 
 ### 📦 Docker Hub Integration
 
@@ -15,7 +15,7 @@ A comprehensive web portal for generating production-ready docker-compose files 
 - **Automated Fetching**: Real-time service information from Docker Hub
 - **Image Metadata**: View pulls, stars, descriptions, and documentation
 
-### 🔒 Security Scanning (Pre-Download)
+### Security Scanning (Pre-Download)
 
 - **Vulnerability Detection**: Scan images for CVEs before downloading compose file
 - **Severity Assessment**: Identify critical, high, medium, and low vulnerabilities
@@ -23,7 +23,7 @@ A comprehensive web portal for generating production-ready docker-compose files 
 - **Block Downloads**: Prevent downloading files with critical security issues
 - **Risk Reports**: Detailed security assessment for each service
 
-### ⚠️ Misconfiguration Detection
+### Misconfiguration Detection
 
 - **Port Conflict Detection**: Identify overlapping port mappings across services
 - **Missing Environment Variables**: Detect required env vars not configured
@@ -32,7 +32,7 @@ A comprehensive web portal for generating production-ready docker-compose files 
 - **Network Configuration**: Check network settings and connectivity
 - **Dependency Issues**: Validate service dependencies and startup order
 
-### � Intelligent Recommendations
+### Intelligent Recommendations
 
 - **Version Alternatives**: Suggest different image versions when vulnerabilities detected
 - **Security Patches**: Recommend patched versions with fixes
@@ -188,8 +188,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📚 Documentation
 
 - **[Architecture](ARCHITECTURE.md)**: Complete system architecture and data flows
-- **[Authentication Strategy](docs/AUTHENTICATION.md)**: Why no authentication + security measures
-- **[Technology Choices](docs/TECHNOLOGY_CHOICES.md)**: Why Go for config validator
 - **[Quick Reference](docs/QUICK_REFERENCE.md)**: Quick start guide and API reference
 - **[Backend README](backend/README.md)**: Backend API documentation
 - **[Frontend README](frontend/README.md)**: Frontend documentation

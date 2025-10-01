@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+body {
+  @apply bg-[#1b1b1b] text-[#e4e4e4] font-sans antialiased;
+}
+
+h1 {
+  @apply tracking-wider;
+}

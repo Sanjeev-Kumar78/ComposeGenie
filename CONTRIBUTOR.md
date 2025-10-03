@@ -37,12 +37,12 @@ By participating in this project, you agree to abide by respectful, inclusive, a
 ### Prerequisites
 ```bash
 # Core requirements
-Node.js 16+
+Node.js 22+
 Python 3.9+
-Go 1.19+
+Go 1.20+
 Docker & Docker Compose
-MongoDB 4.4+
-Redis 6+
+MongoDB 8.0+
+Redis 7.4+
 
 # Development tools
 Git
@@ -52,15 +52,17 @@ Your favorite IDE/editor
 ### Local Environment
 ```bash
 # 1. Fork and clone the repository
-git clone https://github.com/YOUR_USERNAME/docker_compose_generator.git
+git clone https://github.com/Sanjeev-Kumar78/docker_compose_generator.git
 cd docker_compose_generator
 
 # 2. Set up development dependencies
 # Frontend
-cd frontend && npm install
+cd frontend 
+npm install
 
 # Backend
-cd ../backend && npm install
+cd ../backend 
+npm install
 
 # 3. Start local services (MongoDB, Redis)
 docker-compose -f docker-compose.dev.yml up -d
@@ -71,19 +73,24 @@ cp .env.example .env
 
 # 5. Start development servers
 # Terminal 1: Frontend
-cd frontend && npm start
+cd frontend 
+npm run dev
 
 # Terminal 2: Backend
-cd backend && npm run dev
+cd backend 
+npm run dev
 
 # Terminal 3: Security Scanner
-cd services/security-scanner && python -m uvicorn main:app --reload
+cd services/security-scanner 
+python -m uvicorn main:app --reload
 
 # Terminal 4: Template Generator
-cd services/template-generator && npm run dev
+cd services/template-generator 
+npm run dev
 
 # Terminal 5: Config Validator
-cd services/config-validator && go run main.go
+cd services/config-validator 
+go run main.go
 ```
 
 ## 🔧 Development Workflow
@@ -108,10 +115,12 @@ git checkout -b fix/issue-description
 ### 3. Testing Your Changes
 ```bash
 # Frontend tests
-cd frontend && npm test
+cd frontend 
+npm test
 
 # Backend tests
-cd backend && npm test
+cd backend 
+npm test
 
 # Integration tests
 npm run test:integration
@@ -263,7 +272,7 @@ Each service follows its language-specific conventions:
 - Keep documentation up to date
 
 ### API Documentation
-- Use OpenAPI/Swagger specifications
+- Use Swagger specifications
 - Include request/response examples
 - Document error scenarios
 - Provide authentication details
@@ -275,12 +284,6 @@ Each service follows its language-specific conventions:
 - Update with new features
 
 ## 🚀 Release Process
-
-### Versioning
-We follow Semantic Versioning (SemVer):
-- **MAJOR**: Breaking changes
-- **MINOR**: New features (backward compatible)
-- **PATCH**: Bug fixes (backward compatible)
 
 ### Release Workflow
 1. **Feature Freeze**: Stop merging new features
@@ -296,32 +299,6 @@ Contributors are recognized in:
 - Release notes for significant contributions
 - Project documentation
 - Annual contributor highlights
-
-## ❓ Getting Help
-
-### Development Questions
-- **GitHub Discussions**: For general questions
-- **Discord/Slack**: Real-time community chat
-- **Stack Overflow**: Tag with `docker-compose-generator`
-
-### Mentor Program
-New contributors can request mentorship for:
-- First-time contributions
-- Large feature implementations
-- Understanding codebase architecture
-- Best practices guidance
-
-### Office Hours
-Maintainers host weekly office hours:
-- **When**: Fridays 2-3 PM UTC
-- **Where**: Discord voice channel
-- **Topics**: Open discussion, code reviews, planning
-
-## 📞 Contact
-
-- **Project Maintainer**: [Sanjeev Kumar](https://github.com/Sanjeev-Kumar78)
-- **Email**: [Provide if available]
-- **Discord**: [Server invite link]
 
 ---
 

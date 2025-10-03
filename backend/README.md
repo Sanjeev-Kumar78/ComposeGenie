@@ -142,12 +142,10 @@ backend/
 
 ## Getting Started
 
-## Getting Started
-
 ### Prerequisites
 
-- Node.js 16+
-- MongoDB 4.4+
+- Node.js 20+
+- MongoDB 8.0+
 - Environment variables configured
 
 ### Installation

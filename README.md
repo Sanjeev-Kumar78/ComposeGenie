@@ -1,10 +1,10 @@
-# Composify
+# ComposeGenie
 
 A comprehensive web portal for generating production-ready docker-compose files with automated security scanning, misconfiguration detection, and intelligent service recommendations from Docker Hub.
 
 ## 🚀 Overview
 
-**Composify** is a complete solution for safely deploying containerized applications. It fetches services from Docker Hub, scans for vulnerabilities, detects configuration issues (port conflicts, missing environment variables), and suggests alternative image versions if severe security issues are found - all before you download your compose file.
+**ComposeGenie** is a complete solution for safely deploying containerized applications. It fetches services from Docker Hub, scans for vulnerabilities, detects configuration issues (port conflicts, missing environment variables), and suggests alternative image versions if severe security issues are found - all before you download your compose file.
 
 ## Key Features
 

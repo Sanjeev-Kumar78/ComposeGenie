@@ -97,11 +97,11 @@ docker_compose_generator/
 
 ### Prerequisites
 
-- Node.js 16+
+- Node.js 22+ (LTS)
 - Python 3.9+
-- Go 1.19+
-- MongoDB 4.4+
-- Redis 6+
+- Go 1.21+
+- MongoDB 8.0+
+- Redis 7.4+
 - Docker & Docker Compose
 
 ### Quick Start
@@ -117,18 +117,25 @@ docker-compose up -d
 # Or run individual components:
 
 # Frontend (React App)
-cd frontend && npm install && npm start
+cd frontend 
+npm install
+npm run dev
 
 # Backend API
-cd backend && npm install && npm run dev
+cd backend 
+npm install 
+npm run dev
 
 # Microservices
-cd services/security-scanner && python -m uvicorn main:app --reload
-cd services/template-generator && npm run dev
-cd services/config-validator && go run main.go
+cd services/security-scanner
+python -m uvicorn main:app --reload
+cd services/template-generator 
+npm run dev
+cd services/config-validator
+go run main.go
 ```
 
-The application will be available at:
+The application (Local Runtime Endpoints) will be available at:
 
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:3001

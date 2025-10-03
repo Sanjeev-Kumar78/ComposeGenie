@@ -41,6 +41,9 @@ A comprehensive web portal for generating production-ready docker-compose files 
 
 ## 🏗️ Architecture
 
+<img width="1283" height="492" alt="Untitled Diagram drawio" src="https://github.com/user-attachments/assets/eb4d2c4d-b2d0-416f-8af5-d4a88a5d8316" />
+
+### Folder Structure
 ```
 docker_compose_generator/
 ├── frontend/                  # React web portal
